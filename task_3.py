@@ -1,32 +1,33 @@
+def search(data):
+    result = []
+    for i in data:
+        if i % 7 == 0:
+            result.append(i)
+    return result
+
 try:
     numbers = list(map(int, input("Введите числа через пробел: ").split()))
+    multiples = search(numbers)
+
+    with open("resource/count.txt", "w") as file:
+        for num in numbers:
+            file.write(str(num) + " ")
 except ValueError:
     print("Ошибка: введите числа!")
-    exit()
 
-# 1. Записываем исходные числа
-with open("resource/count.txt", "w") as file:
-    file.write(" ".join(map(str, numbers)) + "\n")
-
-# 2. Константа
-x = 73 ** 2 + 29  # 5358
+x = 73 ** 2 + 29
 temp_path = "resource/count_tmp.txt"
 
-# 3. Читаем -> обрабатываем -> пишем во временный файл
-with open("resource/count.txt", "r") as src, open(temp_path, "w") as tmp:
-    for line in src:
+with open("resource/count.txt", "r") as file, open(temp_path, "w") as temp:
+    for line in file:
         processed = []
-        for token in line.split():
-            num = int(token)
+        for j in line.split():
+            num = int(j)
             if num % 7 == 0:
-                # Округляем до 2 знаков для читаемости
-                num = round(num * 100 / x, 2)
+                num = num * 100 / x
             processed.append(str(num))
-        tmp.write(" ".join(processed) + "\n")
+        temp.write(" ".join(processed) + "\n")
 
-# 4. Заменяем исходный файл обработанным (выполняется ПОСЛЕ закрытия файлов выше)
-with open(temp_path, "r") as tmp, open("resource/count.txt", "w") as dst:
-    for line in tmp:
-        dst.write(line)
-
-print("Файл успешно обработан.")
+    with open(temp_path, "r") as temp_path, open("resource/count.txt", "w") as file:
+        for line in temp_path:
+            temp.write(line)
